@@ -33,7 +33,7 @@ opt-einsum==3.3.0
 packaging==20.8
 pandas==1.1.5
 patsy==0.5.1
-Pillow==8.0.1
+Pillow==8.3.2
 progressbar2==3.53.1
 protobuf==3.14.0
 pyasn1==0.4.8
