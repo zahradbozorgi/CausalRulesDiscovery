@@ -1,20 +1,27 @@
-import pandas as pd
-import numpy as np
+""" Functions to detect action rules and print results
+"""
 
-pd.set_option('display.max_columns', None)
+import pandas as pd
 from actionrules.actionRulesDiscovery import ActionRulesDiscovery
 
+pd.set_option('display.max_columns', None)
 
-def actionDiscovery(data, stabel_cols, flexible_cols, consequent_col):
-    stable_cols = stabel_cols
-    flexible_cols = flexible_cols
-    consequent_col = consequent_col
+
+def action_discovery(data, stable_cols, flexible_cols, consequent_col):
+    """ Function for action rule discovery
+
+    :param data: preprocessed event log data
+    :param stable_cols: list of variables that cannot be influenced
+    :param flexible_cols:  list of variables that can be controlled
+    :param consequent_col:  list of target variables to be influenced
+    :return: list of rules, number of rules, list of rule representations
+    """
     # print(f"Stable_cols: {stabel_cols}\n")
     # print(f"flexible_cols: {flexible_cols}\n")
 
-    actionRulesDiscovery = ActionRulesDiscovery()
-    actionRulesDiscovery.load_pandas(data)
-    actionRulesDiscovery.fit(stable_attributes=stable_cols,
+    actionrulesdiscovery = ActionRulesDiscovery()
+    actionrulesdiscovery.load_pandas(data)
+    actionrulesdiscovery.fit(stable_attributes=stable_cols,
                              flexible_attributes=flexible_cols,
                              consequent=consequent_col,
                              conf=55,
@@ -23,14 +30,21 @@ def actionDiscovery(data, stabel_cols, flexible_cols, consequent_col):
                              max_stable_attributes=30,
                              max_flexible_attributes=30,
                              )
-    rules = actionRulesDiscovery.get_action_rules()
-    rules_representation = actionRulesDiscovery.get_action_rules_representation()
-    length = len(actionRulesDiscovery.get_action_rules_representation())
+    rules = actionrulesdiscovery.get_action_rules()
+    rules_representation = actionrulesdiscovery.get_action_rules_representation()
+    length = len(actionrulesdiscovery.get_action_rules_representation())
 
     return rules, length, rules_representation
 
 
-def interpretRules(rules, length, rules_representation):
+def interpret_rules(rules, length, rules_representation):
+    """ Function to interpret rules
+
+    :param rules: list of rules
+    :param length: number of rules
+    :param rules_representation: list of rule representations
+    :return: list for uplift of discovered rules
+    """
     print(f"The number of discovered rules are: {len(rules)}\n")
     # i = 1
     [print(f"Rule: {rule}\n") for rule in rules_representation]
@@ -55,8 +69,13 @@ def interpretRules(rules, length, rules_representation):
 
 
 def get_unique_actions(r_copy):
-    df_u = pd.DataFrame()
+    """ Function to detect unique actions from rule set
+
+    :param r_copy: list of rules
+    :return: dataframe of unique actions
+    """
     rule_id = 0
+    df_tmp_list = []
     for rule in r_copy:
         tmp = pd.DataFrame()
         j = 0
@@ -64,8 +83,8 @@ def get_unique_actions(r_copy):
             tmp.at[0, j] = str(i)
             j += 1
         rule_id += 1
-        df_u = df_u.append(tmp, ignore_index=True)
-
+        df_tmp_list.append(tmp)
+    df_u = pd.concat(df_tmp_list, ignore_index=True)
     df_u.columns = ["a", "b", "c", "d"]
     df_u["a_new"] = "0"
 

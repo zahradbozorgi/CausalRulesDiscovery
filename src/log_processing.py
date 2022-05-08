@@ -1,8 +1,17 @@
-import pandas as pd
+""" Define processing functions for the rules dataframe
+"""
+
 import numpy as np
+import pandas as pd
 
 
 def filter_log(df_, rule):
+    """ Function to create an filtered log
+
+    :param df_: dataframe
+    :param rule: list of rules
+    :return: dataframe with filtered rules
+    """
     # select cases that satisfy the treatment conditions
     mask = 1
     for i in range(len(rule[0][1])):
@@ -22,6 +31,11 @@ def filter_log(df_, rule):
 
 
 def process_data(df_rule):
+    """ Function to preprocess data for modelling
+
+    :param df_rule: dataframe containing rules
+    :return: preprocessed rules dataframe for modelling
+    """
     num_cols = ['CreditScore', 'MonthlyCost', 'NumberOfOffers', 'NoOfTerms', 'FirstWithdrawalAmount',
                 'Treatment', 'Selected']
     cat_cols = ['ApplicationType', 'LoanGoal']
